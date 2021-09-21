@@ -1,4 +1,5 @@
 const express = require('express');
+const Joi = require('joi');
 const app = express();
 
 // Parser
@@ -35,19 +36,34 @@ app.get('/api/usuarios/:id', (req, res) => {
 // 
 app.post('/api/usuarios', (req, res) => {
 
+    const schema = Joi.object({
+        nombre: Joi.string()
+            .min(3)
+            .required()
+    });
+
+    const {error, value} = schema.validate({nombre: req.body.nombre});
+
+    if(!error){
+        const usuario = {
+            id: usuarios.length + 1,
+            nombre: value.nombre
+        };
+    
+        usuarios.push(usuario);
+        res.send(usuario);
+    } else {
+        const mensajeError = error.details[0].message;
+        res.status(400).send(mensajeError);
+    }
+
+/*
     if(!req.body.nombre || !isNaN(req.body.nombre)){
         // 400 Bad Request
         res.status(400).send('Debe ingresar un nombre válido');
         return;
     }
-
-    const usuario = {
-        id: usuarios.length + 1,
-        nombre: req.body.nombre
-    };
-
-    usuarios.push(usuario);
-    res.send(usuario);
+*/
 });
 
 

@@ -5,6 +5,7 @@ const app = express();
 // Parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 // Arreglo de prueba
 const usuarios = [

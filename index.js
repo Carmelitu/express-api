@@ -25,7 +25,7 @@ app.get('/api/usuarios', (req, res) => {
 
 // Filtrando por id
 app.get('/api/usuarios/:id', (req, res) => {
-    let usuario = usuarios.find(user => user.id === Number(req.params.id));
+    let usuario = existeUsuario(req.params.id);
     if(!usuario){
         res.status(404).send('404: Usuario no encontrado');
     } else {
@@ -33,17 +33,13 @@ app.get('/api/usuarios/:id', (req, res) => {
     }
 });
 
-// 
+// Agregando Usuario
 app.post('/api/usuarios', (req, res) => {
 
-    const schema = Joi.object({
-        nombre: Joi.string()
-            .min(3)
-            .required()
-    });
+    // Validando...
+    const {error, value} = validarUsuario(req.params.body);
 
-    const {error, value} = schema.validate({nombre: req.body.nombre});
-
+    // Si pasa validacion suma usuario al arreglo principal
     if(!error){
         const usuario = {
             id: usuarios.length + 1,
@@ -56,16 +52,44 @@ app.post('/api/usuarios', (req, res) => {
         const mensajeError = error.details[0].message;
         res.status(400).send(mensajeError);
     }
-
-/*
-    if(!req.body.nombre || !isNaN(req.body.nombre)){
-        // 400 Bad Request
-        res.status(400).send('Debe ingresar un nombre válido');
-        return;
-    }
-*/
 });
 
+// Editando Usuario
+app.put('/api/usuarios/:id', (req, res) => {
+    // Encontrar si existe usuario a modificar
+    let usuario = usuarios.find(user => user.id === Number(req.params.id));
+    if(!usuario){
+        res.status(404).send('404: Usuario no encontrado');
+        return;
+    }
+
+    // Validando...
+    const {error, value} = validarUsuario(req.body.nombre);
+
+    if(error){
+        const mensajeError = error.details[0].message;
+        res.status(400).send(mensajeError);
+        return;
+    }
+
+    usuario.nombre = value.nombre;
+    res.send(usuario);
+});
+
+// Eliminar Usuario
+app.delete('/api/usuarios/:id', (req, res) => {
+    // Encontrar si existe usuario a modificar
+    let usuario = usuarios.find(user => user.id === Number(req.params.id));
+    if(!usuario){
+        res.status(404).send('404: Usuario no encontrado');
+        return;
+    }
+
+    const index = usuarios.indexOf(usuario);
+    usuarios.splice(index, 1);
+
+    res.send(usuarios);
+});
 
 // Definicion puerto y arranque de servidor
 const port = process.env.PORT || 3000;
@@ -73,4 +97,18 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Servidor funcionando en el puerto ${port}.`);
 });
+
+const existeUsuario = (id) => {
+    return usuarios.find(user => user.id === Number(id));
+}
+
+const validarUsuario = (nom) => {
+    const schema = Joi.object({
+        nombre: Joi.string()
+            .min(3)
+            .required()
+    });
+
+    return (schema.validate({nombre: nom}));
+}
 

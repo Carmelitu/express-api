@@ -12,7 +12,8 @@
     "config": "^3.3.6",
     "debug": "^4.3.2",
     "express": "^4.17.1",
-    "joi": "^17.4.2"
+    "joi": "^17.4.2",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"

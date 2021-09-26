@@ -17,6 +17,7 @@ app.use('/', router);
 // $env:NODE_ENV="entorno"
 console.log('App: ' + config.get('nombre'));
 console.log('Base de datos: ' + config.get('config-db.host'));
+<<<<<<< HEAD
 
 // Verif Entorno
 if(app.get('env') === 'development'){
@@ -27,6 +28,18 @@ if(app.get('env') === 'development'){
 dbDebug('Conectando base de datos');
 
 
+=======
+
+// Verif Entorno
+if(app.get('env') === 'development'){
+    app.use(morgan('tiny'));
+    inicioDebug('Morgan Habilitado');
+}
+
+dbDebug('Conectando base de datos');
+
+
+>>>>>>> db3c9d866eff7a9f78878af6ea9d595761294cfe
 // Hello World
 app.get('/', (req, res) => {
     res.send('Hello World by Express');
@@ -39,4 +52,10 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log(`Servidor funcionando en el puerto ${port}.`);
+<<<<<<< HEAD
 });
+=======
+});
+
+
+>>>>>>> db3c9d866eff7a9f78878af6ea9d595761294cfe

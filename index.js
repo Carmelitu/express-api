@@ -1,11 +1,15 @@
 const express = require('express');
 const Joi = require('joi');
+const morgan = require('morgan');
 const app = express();
+
 
 // Parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
+app.use(morgan('tiny'));
 
 // Arreglo de prueba
 const usuarios = [
@@ -36,9 +40,9 @@ app.get('/api/usuarios/:id', (req, res) => {
 
 // Agregando Usuario
 app.post('/api/usuarios', (req, res) => {
-
     // Validando...
-    const {error, value} = validarUsuario(req.params.body);
+    const {error, value} = validarUsuario(req.body.nombre);
+    
 
     // Si pasa validacion suma usuario al arreglo principal
     if(!error){
